@@ -48,7 +48,6 @@ packages/
 
 <img width="933" height="414" alt="Screenshot 2025-08-26 at 19 04 49" src="https://github.com/user-attachments/assets/cf85b844-433d-440b-aa3d-ffc909adee51" />
 
-
 ## 🛠️ Tech Stack
 
 - **Framework**: Flutter 3.8.1+
@@ -101,11 +100,7 @@ dependencies:
 
 ## Demo Example
 
-
-
 https://github.com/user-attachments/assets/0809625a-ad8a-4d1a-8890-9b846e5e6f3f
-
-
 
 ## 📦 Package Structure
 
@@ -223,6 +218,7 @@ flutter build web --release --dart-define=SUPABASE_ANON_KEY={ANON_KEY_HERE} --da
 - ✅ Form management with BLoC
 - ✅ Multi-platform support (Android, iOS, Web, Desktop)
 - ✅ Clean architecture with repository pattern
+- ✅ Dependency Inversion Principle (DIP)
 
 ## 📞 Contact
 
