@@ -6,5 +6,8 @@ abstract class SupabaseApiClient {
   Future<AuthResponse> signIn(String email, String password);
   Future<void> signOut();
   Future<AuthResponse> signUp(String email, String password, String username);
-  Future<TaskModel> createTask(TaskModel taskModel);
+  Future<void> createTask(TaskModel taskModel);
+  Future<List<TaskModel>> getTasks();
+  Future<List<TaskModel>> filterTasks(bool isCompleted);
+  Future<void> updateTask(TaskModel taskModel);
 }

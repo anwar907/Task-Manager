@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_repository/src/models/task_model.dart';
 import 'package:supabase_repository/src/supabase_api_client.dart';
+import 'package:uuid/uuid.dart';
 
 class SupabaseRepositoryFactory {
   final _supabase = Supabase.instance.client;
@@ -82,10 +83,60 @@ class SupabaseApiRepository implements SupabaseApiClient {
   }
 
   @override
-  Future<TaskModel> createTask(TaskModel taskModel) async {
+  Future<void> createTask(TaskModel taskModel) async {
     try {
-      final response = await _supabase.from('tasks').insert(taskModel.toJson());
-      return TaskModel.fromJson(response);
+      final data = TaskModel(
+        userId: _supabase.auth.currentUser?.id ?? '',
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+        title: taskModel.title,
+        description: taskModel.description,
+        dueDate: taskModel.dueDate,
+        id: Uuid().v4(),
+        isCompleted: false,
+      );
+
+      final response = await _supabase.from('tasks').insert(data.toJson());
+      return response;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<TaskModel>> getTasks() async {
+    try {
+      final response = await _supabase
+          .from('tasks')
+          .select()
+          .eq('id', _supabase.auth.currentUser?.id ?? '');
+      return response.map((e) => TaskModel.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<TaskModel>> filterTasks(bool isCompleted) async {
+    try {
+      final response = await _supabase
+          .from('tasks')
+          .select()
+          .eq('is_completed', isCompleted);
+      return response.map((e) => TaskModel.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<void> updateTask(TaskModel taskModel) async {
+    try {
+      final response = await _supabase
+          .from('tasks')
+          .update(taskModel.toJson())
+          .eq('id', taskModel.id ?? '');
+      return response;
     } catch (e) {
       throw Exception(e);
     }

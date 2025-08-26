@@ -6,9 +6,33 @@ class TaskRepository {
   TaskRepository({required SupabaseApiRepository supabaseApiRepository})
     : _supabaseApiRepository = supabaseApiRepository;
 
-  Future<TaskModel> createTask(TaskModel taskModel) {
+  void createTask(TaskModel taskModel) {
     try {
-      return _supabaseApiRepository.createTask(taskModel);
+      _supabaseApiRepository.createTask(taskModel);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<TaskModel>> getTasks() async {
+    try {
+      return await _supabaseApiRepository.getTasks();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<TaskModel>> filterTasks(bool isCompleted) async {
+    try {
+      return await _supabaseApiRepository.filterTasks(isCompleted);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> updateTask(TaskModel taskModel) async {
+    try {
+      await _supabaseApiRepository.updateTask(taskModel);
     } catch (e) {
       throw Exception(e.toString());
     }

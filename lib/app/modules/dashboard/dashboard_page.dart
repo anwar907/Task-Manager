@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task_repository/task_repository.dart';
 import 'package:willdo/app/app_routes.dart';
+import 'package:willdo/app/modules/dashboard/bloc/form/form_cubit.dart';
+import 'package:willdo/app/modules/dashboard/bloc/task/task_bloc.dart';
+import 'package:willdo/app/modules/dashboard/view/dashboard_view.dart';
 
 class DashboardPage extends StatelessWidget {
   static const routeName = AppRoutes.dashboard;
@@ -7,13 +12,18 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Task Manager')),
-      body: ListView.builder(
-        itemCount: 20,
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) => SizedBox(child: Text('Task $index')),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              FormCubit(taskRepository: context.read<TaskRepository>()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              TaskBloc(taskRepository: context.read<TaskRepository>()),
+        ),
+      ],
+      child: DashboardView(),
     );
   }
 }

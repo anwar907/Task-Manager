@@ -1,24 +1,22 @@
 class TaskModel {
-  final String id;
+  final String? id;
   final String title;
   final String description;
-  final bool isCompleted;
+  final bool? isCompleted;
   final String? userId;
-  final String createdAt;
-  final String updatedAt;
-  final String? deletedAt;
-  final String? dueDate;
+  final String? createdAt;
+  final String? updatedAt;
+  final String dueDate;
 
   TaskModel({
-    required this.id,
+    this.id,
     required this.title,
     required this.description,
-    required this.isCompleted,
+    this.isCompleted,
     this.userId,
-    required this.createdAt,
-    required this.updatedAt,
-    this.deletedAt,
-    this.dueDate,
+    this.createdAt,
+    this.updatedAt,
+    required this.dueDate,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
@@ -30,7 +28,6 @@ class TaskModel {
       userId: json['user_id'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
-      deletedAt: json['deleted_at'],
       dueDate: json['due_date'],
     );
   }
@@ -44,7 +41,6 @@ class TaskModel {
       'user_id': userId,
       'created_at': createdAt,
       'updated_at': updatedAt,
-      'deleted_at': deletedAt,
       'due_date': dueDate,
     };
   }
