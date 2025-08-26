@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:willdo/app/app_routes.dart';
-import 'package:willdo/app/modules/dashboard/dashboard_page.dart';
-import 'package:willdo/app/modules/login/login_page.dart';
 import 'package:willdo/app/modules/splash/cubit/splash_cubit.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -11,25 +9,19 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: BlocListener<SplashCubit, SplashState>(
-          bloc: SplashCubit()..sessionAuth(),
+    return BlocProvider(
+      create: (context) => SplashCubit()..sessionAuth(),
+      child: Scaffold(
+        body: BlocListener<SplashCubit, SplashState>(
           listener: (context, state) {
-            if (state.isLogin == false) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
+            if (state.isLogin) {
+              Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
             } else {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const DashboardPage()),
-              );
+              Navigator.pushReplacementNamed(context, AppRoutes.login);
             }
           },
-          child: const SafeArea(
-            child: Center(child: CircularProgressIndicator()),
+          child: const Center(
+            child: SafeArea(child: CircularProgressIndicator()),
           ),
         ),
       ),
