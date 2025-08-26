@@ -22,8 +22,7 @@ lib/
 │   ├── modules/           # Feature modules
 │   │   ├── dashboard/     # Dashboard feature
 │   │   │   ├── bloc/      # Task & Form BLoCs
-│   │   │   ├── view/      # UI components
-│   │   │   └── dashboard_page.dart
+│   │   │   └── view/      # UI components
 │   │   ├── login/         # Login feature
 │   │   │   ├── bloc/      # Auth BLoC
 │   │   │   └── view/      # Login UI
@@ -46,6 +45,9 @@ packages/
 ```
 
 ## Diagram Architecture
+
+<img width="933" height="414" alt="Screenshot 2025-08-26 at 19 04 49" src="https://github.com/user-attachments/assets/cf85b844-433d-440b-aa3d-ffc909adee51" />
+
 
 ## 🛠️ Tech Stack
 
@@ -98,6 +100,12 @@ dependencies:
    ```
 
 ## Demo Example
+
+
+
+https://github.com/user-attachments/assets/0809625a-ad8a-4d1a-8890-9b846e5e6f3f
+
+
 
 ## 📦 Package Structure
 
@@ -188,13 +196,13 @@ cd packages/task_repository && flutter test
 
 ```bash
 # Android
-flutter build apk --release
+flutter build apk --release --dart-define=SUPABASE_ANON_KEY={ANON_KEY_HERE} --dart-define=URL=https://{PROJECT_ID_HERE}.supabase.co --dart-define=STORAGE_RETRY_ATTEMPTS=5
 
 # iOS
-flutter build ios --release
+flutter build ios --release --dart-define=SUPABASE_ANON_KEY={ANON_KEY_HERE} --dart-define=URL=https://{PROJECT_ID_HERE}.supabase.co --dart-define=STORAGE_RETRY_ATTEMPTS=5
 
 # Web
-flutter build web --release
+flutter build web --release --dart-define=SUPABASE_ANON_KEY={ANON_KEY_HERE} --dart-define=URL=https://{PROJECT_ID_HERE}.supabase.co --dart-define=STORAGE_RETRY_ATTEMPTS=5
 ```
 
 ## 📱 Platform Support
