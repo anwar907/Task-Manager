@@ -5,6 +5,7 @@ import 'package:supabase_repository/supabase_repository.dart';
 import 'package:task_repository/task_repository.dart';
 import 'package:willdo/app/app_routes.dart';
 import 'package:willdo/app/modules/dashboard/bloc/form/form_cubit.dart';
+import 'package:willdo/app/modules/dashboard/bloc/task/task_bloc.dart';
 import 'package:willdo/app/modules/login/bloc/auth_bloc/auth_bloc.dart';
 import 'package:willdo/app/modules/signup/bloc/signup_bloc/signup_bloc.dart';
 import 'package:willdo/app/modules/splash/cubit/splash_cubit.dart';
@@ -48,6 +49,9 @@ class App extends StatelessWidget {
           ),
           BlocProvider<FormCubit>(
             create: (_) => FormCubit(taskRepository: _taskRepository),
+          ),
+          BlocProvider(
+            create: (_) => TaskBloc(taskRepository: _taskRepository),
           ),
         ],
         child: MaterialApp(

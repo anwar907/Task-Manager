@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storage_repository/src/storage_repository.dart';
 
@@ -25,7 +23,7 @@ class PereferenceHelper implements StorageRepository {
   @override
   Future<bool> delete(String key) async {
     if (_prefs == null) {
-      await init(); // Pastikan SharedPreferences sudah diinisialisasi
+      await init();
     }
     final isDeleted = await _prefs?.remove(key);
 
@@ -37,7 +35,7 @@ class PereferenceHelper implements StorageRepository {
   @override
   Future<U?> read<U>(String key) async {
     if (_prefs == null) {
-      await init(); // Pastikan SharedPreferences sudah diinisialisasi
+      await init();
     }
 
     final value = _prefs?.get(key);
@@ -48,9 +46,8 @@ class PereferenceHelper implements StorageRepository {
 
   @override
   Future<void> save(String key, value) async {
-    log('key $key value $value');
     if (_prefs == null) {
-      await init(); // Pastikan SharedPreferences sudah diinisialisasi
+      await init();
     }
     if (value is String) {
       await _prefs?.setString(key, value);

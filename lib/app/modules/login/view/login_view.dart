@@ -61,9 +61,10 @@ class LoginView extends StatelessWidget {
                     );
                   }
                   if (state.status == AuthStatus.success) {
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushNamedAndRemoveUntil(
                       context,
                       AppRoutes.dashboard,
+                      (route) => false,
                     );
                   }
                   if (state.status == AuthStatus.failure) {

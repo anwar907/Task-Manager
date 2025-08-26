@@ -1,32 +1,30 @@
 part of 'form_cubit.dart';
 
+enum FormStatus { initial, loading, success, failure }
+
 class TaskFormState extends Equatable {
   final DateTime? selectedDate;
-  final bool isLoading;
+  final FormStatus status;
   final String? errorMessage;
-  final bool isSuccess;
 
   const TaskFormState({
     this.selectedDate,
-    this.isLoading = false,
+    this.status = FormStatus.initial,
     this.errorMessage,
-    this.isSuccess = false,
   });
 
   TaskFormState copyWith({
     DateTime? dateTime,
-    bool? isLoading,
+    FormStatus? status,
     String? errorMessage,
-    bool? isSuccess,
   }) {
     return TaskFormState(
       selectedDate: dateTime ?? selectedDate,
-      isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
-      isSuccess: isSuccess ?? this.isSuccess,
+      status: status ?? this.status,
     );
   }
 
   @override
-  List<Object?> get props => [selectedDate, isLoading, errorMessage, isSuccess];
+  List<Object?> get props => [selectedDate, errorMessage, status];
 }

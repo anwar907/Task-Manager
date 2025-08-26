@@ -66,9 +66,11 @@ class SignupView extends StatelessWidget {
               BlocListener<SignupBloc, SignupState>(
                 listener: (context, state) {
                   if (state.status == SignupStatus.loading) {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Loading...')));
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          Center(child: Text(state.messsage ?? '')),
+                    );
                   }
                   if (state.status == SignupStatus.success) {
                     Navigator.pushReplacement(
@@ -78,8 +80,10 @@ class SignupView extends StatelessWidget {
                   }
 
                   if (state.status == SignupStatus.failure) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.messsage ?? '')),
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          Center(child: Text(state.messsage ?? '')),
                     );
                   }
                 },

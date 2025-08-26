@@ -10,4 +10,5 @@ abstract class SupabaseApiClient {
   Future<List<TaskModel>> getTasks();
   Future<List<TaskModel>> filterTasks(bool isCompleted);
   Future<void> updateTask(TaskModel taskModel);
+  Future<void> deleteTask(String id);
 }

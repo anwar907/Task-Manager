@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_repository/supabase_repository.dart';
 import 'package:willdo/app/modules/dashboard/bloc/form/form_cubit.dart';
+import 'package:willdo/app/modules/dashboard/bloc/task/task_bloc.dart';
+import 'package:willdo/app/utils/task_status.dart';
 
 class TaskFormView extends StatelessWidget {
   TaskFormView({super.key, this.taskToEdit});
@@ -24,11 +26,14 @@ class TaskFormView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize form with existing data if editing
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FormCubit>().resetState();
+    });
+
     if (isEditMode && taskToEdit != null) {
-      title.text = taskToEdit!.title;
-      description.text = taskToEdit!.description;
-      date.text = taskToEdit!.dueDate;
+      title.text = taskToEdit?.title ?? '';
+      description.text = taskToEdit?.description ?? '';
+      date.text = taskToEdit?.dueDate.toDbFormat() ?? '';
     }
 
     return SimpleDialog(
@@ -41,7 +46,7 @@ class TaskFormView extends StatelessWidget {
         children: [
           Text(isEditMode ? 'Edit Task' : 'Add New Task'),
           InkWell(
-            onTap: () => Navigator.pop(context),
+            onTap: () => Navigator.pop(context, false),
             child: const Icon(Icons.close),
           ),
         ],
@@ -98,16 +103,22 @@ class TaskFormView extends StatelessWidget {
                             context: context,
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2030),
-                            initialDate: state.selectedDate ?? DateTime.now(),
+                            initialDate:
+                                state.selectedDate ??
+                                date.text.toDateTime() ??
+                                DateTime.now(),
                           ).then((value) {
                             if (value != null) {
+                              if (!context.mounted) return;
                               context.read<FormCubit>().selectDate(value);
                             }
                           });
                         },
                         child: Text(
-                          state.selectedDate == null
+                          state.selectedDate == null && date.text.isEmpty
                               ? 'Select Date'
+                              : date.text.isNotEmpty
+                              ? date.text
                               : '${state.selectedDate?.day}-${state.selectedDate?.month}-${state.selectedDate?.year}',
                         ),
                       );
@@ -124,12 +135,18 @@ class TaskFormView extends StatelessWidget {
                                   if (formKey.currentState?.validate() ??
                                       false) {
                                     context.read<FormCubit>().updateTask(
-                                      taskToEdit?.id ?? '',
-                                      title.text,
-                                      description.text,
-                                      date.text,
+                                      TaskModel(
+                                        id: taskToEdit?.id,
+                                        title: title.text,
+                                        description: description.text,
+                                        isCompleted: taskToEdit?.isCompleted,
+                                        userId: taskToEdit?.userId,
+                                        createdAt: taskToEdit?.createdAt,
+                                        updatedAt: DateTime.now()
+                                            .toIso8601String(),
+                                        dueDate: date.text.toDbFormat(),
+                                      ),
                                     );
-                                    // Navigator.pop(context);
                                   }
                                 } else {
                                   if (formKey.currentState?.validate() ??
@@ -139,13 +156,13 @@ class TaskFormView extends StatelessWidget {
                                       description.text,
                                       date.text,
                                     );
-                                    // Navigator.pop(context);
                                   }
                                 }
-                                Navigator.pop(context);
+                                context.read<TaskBloc>().add(FetchTasks());
+                                Navigator.pop(context, true);
                               }
                             : null,
-                        child: const Text('Sign Up'),
+                        child: const Text('Submit'),
                       );
                     },
                   ),

@@ -49,6 +49,8 @@ class SupabaseApiRepository implements SupabaseApiClient {
         password: password,
       );
       return response;
+    } on PostgrestException catch (e) {
+      throw Exception(e.toString());
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -86,7 +88,7 @@ class SupabaseApiRepository implements SupabaseApiClient {
   Future<void> createTask(TaskModel taskModel) async {
     try {
       final data = TaskModel(
-        userId: _supabase.auth.currentUser?.id ?? '',
+        userId: _supabase.auth.currentSession?.user.id ?? '',
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),
         title: taskModel.title,
@@ -96,8 +98,7 @@ class SupabaseApiRepository implements SupabaseApiClient {
         isCompleted: false,
       );
 
-      final response = await _supabase.from('tasks').insert(data.toJson());
-      return response;
+      await _supabase.from('tasks').insert(data.toJson());
     } catch (e) {
       throw Exception(e);
     }
@@ -109,8 +110,10 @@ class SupabaseApiRepository implements SupabaseApiClient {
       final response = await _supabase
           .from('tasks')
           .select()
-          .eq('id', _supabase.auth.currentUser?.id ?? '');
+          .eq('user_id', _supabase.auth.currentUser?.id ?? '');
       return response.map((e) => TaskModel.fromJson(e)).toList();
+    } on PostgrestException catch (e) {
+      throw Exception(e);
     } catch (e) {
       throw Exception(e);
     }
@@ -132,12 +135,20 @@ class SupabaseApiRepository implements SupabaseApiClient {
   @override
   Future<void> updateTask(TaskModel taskModel) async {
     try {
-      final response = await _supabase
+      await _supabase
           .from('tasks')
           .update(taskModel.toJson())
           .eq('id', taskModel.id ?? '');
-      return response;
-    } catch (e) {
+    } on PostgrestException catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<void> deleteTask(String id) async {
+    try {
+      await _supabase.from('tasks').delete().eq('id', id);
+    } on PostgrestException catch (e) {
       throw Exception(e);
     }
   }

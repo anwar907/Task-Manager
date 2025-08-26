@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_repository/supabase_repository.dart';
 import 'package:task_repository/task_repository.dart';
+import 'package:willdo/app/utils/task_status.dart';
 
 part 'form_state.dart';
 
@@ -12,94 +13,49 @@ class FormCubit extends Cubit<TaskFormState> {
 
   final TaskRepository _taskRepository;
 
-  String _convertDateFormat(String dateString) {
-    try {
-      final parts = dateString.split('-');
-      if (parts.length == 3) {
-        final day = parts[0].padLeft(2, '0');
-        final month = parts[1].padLeft(2, '0');
-        final year = parts[2];
-        return '$year-$month-$day';
-      }
-      return dateString;
-    } catch (e) {
-      return dateString;
-    }
-  }
-
   Future<void> saveTask(
     String title,
     String description,
     String dueDate,
   ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
+    emit(state.copyWith(errorMessage: null, status: FormStatus.loading));
 
     try {
       final taskModel = TaskModel(
         title: title,
         description: description,
-        dueDate: _convertDateFormat(dueDate),
+        dueDate: dueDate.toDbFormat(),
       );
 
-      _taskRepository.createTask(taskModel);
+      await _taskRepository.createTask(taskModel);
 
-      emit(
-        state.copyWith(isLoading: false, isSuccess: true, errorMessage: null),
-      );
-
-      // Reset form after successful save
-      Future.delayed(const Duration(milliseconds: 500), () {
-        emit(const TaskFormState());
-      });
+      emit(state.copyWith(status: FormStatus.success, errorMessage: 'Success'));
     } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: e.toString(),
-          isSuccess: false,
-        ),
-      );
+      emit(state.copyWith(errorMessage: 'Failure', status: FormStatus.failure));
     }
   }
 
-  Future<void> updateTask(
-    String id,
-    String title,
-    String description,
-    String dueDate,
-  ) async {
-    emit(state.copyWith(isLoading: true, errorMessage: null, isSuccess: false));
+  Future<void> updateTask(TaskModel task) async {
+    emit(state.copyWith(status: FormStatus.loading));
 
     try {
-      final taskModel = TaskModel(
-        id: id,
-        title: title,
-        description: description,
-        dueDate: _convertDateFormat(dueDate),
-      );
+      await _taskRepository.updateTask(task);
 
-      await _taskRepository.updateTask(taskModel);
-
-      emit(
-        state.copyWith(isLoading: false, isSuccess: true, errorMessage: null),
-      );
-
-      // Reset form after successful update
-      Future.delayed(const Duration(milliseconds: 500), () {
-        emit(const TaskFormState());
-      });
+      emit(state.copyWith(errorMessage: 'Success', status: FormStatus.success));
     } catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: e.toString(),
-          isSuccess: false,
-        ),
-      );
+      emit(state.copyWith(errorMessage: 'Failure', status: FormStatus.failure));
     }
   }
 
   void selectDate(DateTime dateTime) {
+    // clear previouse date time
+    if (state.selectedDate != null) {
+      emit(state.copyWith(dateTime: null));
+    }
     emit(state.copyWith(dateTime: dateTime));
+  }
+
+  void resetState() {
+    emit(const TaskFormState());
   }
 }

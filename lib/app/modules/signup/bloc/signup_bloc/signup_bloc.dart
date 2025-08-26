@@ -24,9 +24,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
       emit(state.copyWith(status: SignupStatus.success, messsage: 'Success'));
     } catch (e) {
-      emit(
-        state.copyWith(status: SignupStatus.failure, messsage: e.toString()),
-      );
+      emit(state.copyWith(status: SignupStatus.failure, messsage: 'Failure'));
     }
   }
 }
