@@ -1,5 +1,24 @@
 import 'package:supabase_repository/supabase_repository.dart';
 
+class AuthRepositoryException implements Exception {
+  final Exception exception;
+  final StackTrace stackTrace;
+
+  AuthRepositoryException(this.exception, this.stackTrace);
+}
+
+class SigninException extends AuthRepositoryException {
+  SigninException(super.exception, super.stackTrace);
+}
+
+class SignUpException extends AuthRepositoryException {
+  SignUpException(super.exception, super.stackTrace);
+}
+
+class SignOutException extends AuthRepositoryException {
+  SignOutException(super.exception, super.stackTrace);
+}
+
 class AuthRepository {
   final SupabaseApiClient _supabaseRepository;
 
@@ -10,8 +29,8 @@ class AuthRepository {
     try {
       final response = await _supabaseRepository.signIn(email, password);
       return response.session?.accessToken;
-    } catch (e) {
-      throw Exception(e.toString());
+    } on Exception catch (e, stackTrace) {
+      throw SigninException(e, stackTrace);
     }
   }
 
@@ -23,16 +42,16 @@ class AuthRepository {
         username,
       );
       return response.session?.accessToken;
-    } catch (e) {
-      throw Exception(e.toString());
+    } on Exception catch (e, stackTrace) {
+      throw SignUpException(e, stackTrace);
     }
   }
 
   Future<void> signOut() async {
     try {
       await _supabaseRepository.signOut();
-    } catch (e) {
-      throw Exception(e.toString());
+    } on Exception catch (e, stackTrace) {
+      throw SignOutException(e, stackTrace);
     }
   }
 }

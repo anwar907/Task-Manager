@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   supabase_repository:
     path: ../supabase_repository
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:
