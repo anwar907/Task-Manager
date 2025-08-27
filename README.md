@@ -219,6 +219,7 @@ flutter build web --release --dart-define=SUPABASE_ANON_KEY={ANON_KEY_HERE} --da
 - ✅ Multi-platform support (Android, iOS, Web, Desktop)
 - ✅ Clean architecture with repository pattern
 - ✅ Dependency Inversion Principle (DIP)
+- ✅ Unit Test on Domain + Data layers.
 
 ## 📞 Contact
 
